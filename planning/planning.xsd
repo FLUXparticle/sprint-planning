@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="tasks">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="task" type="TaskType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="TaskType">
+        <xs:sequence>
+            <xs:element name="task" type="TaskType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="text" type="xs:string"/>
+        <xs:attribute name="done" type="xs:boolean"/>
+        <xs:attribute name="important" type="xs:boolean"/>
+        <xs:attribute name="urgent" type="xs:boolean"/>
+    </xs:complexType>
+</xs:schema>

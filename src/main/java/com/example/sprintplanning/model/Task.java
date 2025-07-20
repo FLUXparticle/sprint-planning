@@ -4,11 +4,10 @@ import jakarta.xml.bind.annotation.*;
 
 import java.util.*;
 
-@XmlRootElement(name = "task")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Task {
 
-    @XmlValue
+    @XmlAttribute
     private String text;
 
     @XmlAttribute
