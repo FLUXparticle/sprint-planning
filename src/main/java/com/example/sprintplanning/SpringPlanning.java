@@ -16,7 +16,7 @@ public class SpringPlanning extends Application {
     Button btnNew, btnDelete, btnIndent, btnOutdent, btnImportant, btnUrgent, btnDone;
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws Exception {
         // 1. Instantiate Controls
         weekListView   = new ListView<>();
         taskTreeView   = new TreeView<>();

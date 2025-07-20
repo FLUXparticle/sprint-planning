@@ -9,6 +9,8 @@ import java.io.*;
 
 public class SpringPlanningController {
 
+    private static final File FOLDER = new File("planning");
+
     private final SpringPlanning view;
 
     private final SpringPlanningModel model;
@@ -34,9 +36,8 @@ public class SpringPlanningController {
     }
 
     public void loadWeekPlans() {
-        File folder = new File("planning");
-        if (folder.exists() && folder.isDirectory()) {
-            File[] files = folder.listFiles((dir, name) -> name.endsWith(".xml"));
+        if (FOLDER.exists() && FOLDER.isDirectory()) {
+            File[] files = FOLDER.listFiles((dir, name) -> name.endsWith(".xml"));
             if (files != null) {
                 view.weekListView.getItems().clear();
                 for (File file : files) {
@@ -46,10 +47,28 @@ public class SpringPlanningController {
         }
     }
 
-    // Controller method stubs for Use Cases
+    // Controller methods for Use Cases
 
     public void onWeekSelected(MouseEvent event) {
-        System.out.println("loading of week plan");
+        String selectedFile = view.weekListView.getSelectionModel().getSelectedItem();
+        if (selectedFile == null) return;
+
+        File file = new File(FOLDER, selectedFile);
+        try {
+            model.loadWeekPlan(file.getPath());
+
+            TreeItem<Task> root = new TreeItem<>(new Task("Root"));
+            root.setExpanded(true);
+
+            for (Task task : model.getTasks()) {
+                root.getChildren().add(createTreeItem(task));
+            }
+
+            view.taskTreeView.setRoot(root);
+            view.taskTreeView.setShowRoot(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void onNewTask(ActionEvent event) {
@@ -82,6 +101,14 @@ public class SpringPlanningController {
 
     public void onTaskRename(TreeView.EditEvent<Task> event) {
         System.out.println("renaming of task on edit commit");
+    }
+
+    private TreeItem<Task> createTreeItem(Task task) {
+        TreeItem<Task> item = new TreeItem<>(task);
+        for (Task child : task.getChildren()) {
+            item.getChildren().add(createTreeItem(child));
+        }
+        return item;
     }
 
 }
