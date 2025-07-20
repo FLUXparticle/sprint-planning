@@ -56,7 +56,8 @@ public class SpringPlanning extends Application {
         Scene scene = new Scene(root, 800, 600);
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
-        new SpringPlanningController(this);
+        SpringPlanningModel model = new SpringPlanningModel();
+        new SpringPlanningController(this, model);
 
         primaryStage.setScene(scene);
         primaryStage.setTitle("Sprint Planning");

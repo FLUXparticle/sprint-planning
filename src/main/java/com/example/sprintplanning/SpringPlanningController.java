@@ -9,8 +9,11 @@ public class SpringPlanningController {
 
     private final SpringPlanning view;
 
-    public SpringPlanningController(SpringPlanning view) {
+    private final SpringPlanningModel model;
+
+    public SpringPlanningController(SpringPlanning view, SpringPlanningModel model) {
         this.view = view;
+        this.model = model;
 
         // Event bindings
         view.weekListView.setOnMouseClicked(this::onWeekSelected);
