@@ -5,6 +5,8 @@ import javafx.event.*;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 
+import java.io.*;
+
 public class SpringPlanningController {
 
     private final SpringPlanning view;
@@ -27,6 +29,21 @@ public class SpringPlanningController {
         view.btnDone.setOnAction(this::onToggleDone);
 
         view.taskTreeView.setOnEditCommit(this::onTaskRename);
+
+        loadWeekPlans();
+    }
+
+    public void loadWeekPlans() {
+        File folder = new File("planning");
+        if (folder.exists() && folder.isDirectory()) {
+            File[] files = folder.listFiles((dir, name) -> name.endsWith(".xml"));
+            if (files != null) {
+                view.weekListView.getItems().clear();
+                for (File file : files) {
+                    view.weekListView.getItems().add(file.getName());
+                }
+            }
+        }
     }
 
     // Controller method stubs for Use Cases
