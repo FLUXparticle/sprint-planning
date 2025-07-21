@@ -95,6 +95,19 @@ public class SpringPlanningController {
             return cell;
         });
 
+        view.taskTreeView.setOnKeyPressed(event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.C) {
+                TreeItem<Task> selected = view.taskTreeView.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    String fullPathText = buildFullTaskText(selected);
+                    Clipboard clipboard = Clipboard.getSystemClipboard();
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString(fullPathText);
+                    clipboard.setContent(content);
+                }
+            }
+        });
+
         loadWeekPlans();
     }
 
@@ -426,6 +439,22 @@ public class SpringPlanningController {
         } catch (JAXBException e) {
             e.printStackTrace();
         }
+    }
+
+    private String buildFullTaskText(TreeItem<Task> item) {
+        List<String> parts = new ArrayList<>();
+
+        TreeItem<Task> current = item;
+        while (current != null && current.getParent() != null && current.getParent().getParent() != null) {
+            Task task = current.getValue();
+            if (task != null) {
+                parts.add(task.getText());
+            }
+            current = current.getParent();
+        }
+
+        Collections.reverse(parts);
+        return String.join(" - ", parts);
     }
 
 }
