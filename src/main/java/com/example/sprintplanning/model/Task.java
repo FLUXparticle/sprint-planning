@@ -23,14 +23,20 @@ public class Task {
     private boolean open;
 
     @XmlElement(name = "task")
-    private List<Task> children = new ArrayList<>();
+    private List<Task> children;
 
+    // Default constructor required by JAXB
     public Task() {
-        // Default constructor required by JAXB
+        this(null);
     }
 
     public Task(String text) {
+        this(text, new ArrayList<>());
+    }
+
+    public Task(String text, List<Task> children) {
         this.text = text;
+        this.children = children;
     }
 
     public String getText() { return text; }

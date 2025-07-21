@@ -9,6 +9,7 @@ import javafx.scene.input.*;
 import javafx.util.*;
 
 import java.io.*;
+import java.util.*;
 
 public class SpringPlanningController {
 
@@ -96,10 +97,12 @@ public class SpringPlanningController {
         try {
             model.loadWeekPlan(file.getPath());
 
-            TreeItem<Task> root = new TreeItem<>(new Task("Root"));
+            List<Task> tasks = model.getTasks();
+
+            TreeItem<Task> root = new TreeItem<>(new Task("Root", tasks));
             root.setExpanded(true);
 
-            for (Task task : model.getTasks()) {
+            for (Task task : tasks) {
                 root.getChildren().add(createTreeItem(task));
             }
 
@@ -133,7 +136,27 @@ public class SpringPlanningController {
     }
 
     public void onDeleteTask(ActionEvent event) {
-        System.out.println("deletion of selected task(s)");
+        TreeItem<Task> selected = view.taskTreeView.getSelectionModel().getSelectedItem();
+
+        if (selected == null || selected.getParent() == null) {
+            // Kein Eintrag oder Root ausgewählt
+            return;
+        }
+
+        TreeItem<Task> parentItem = selected.getParent();
+        Task parentTask = parentItem.getValue();
+        Task selectedTask = selected.getValue();
+
+        // Entferne aus Model
+        parentTask.getChildren().remove(selectedTask);
+
+        // Entferne aus TreeView
+        parentItem.getChildren().remove(selected);
+
+        // Auswahl zurück auf Parent setzen
+        view.taskTreeView.getSelectionModel().select(parentItem);
+
+        save();
     }
 
     public void onIndentTask(ActionEvent event) {
