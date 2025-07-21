@@ -50,8 +50,9 @@ public class SpringPlanning extends Application {
         toolbar.setStyle("-fx-background-color: #EEE;");
 
         // 4. Layout: Center with toolbar + TreeView
-        VBox centerBox = new VBox(5, toolbar, taskTreeView);
-        centerBox.setPadding(new Insets(10));
+        VBox centerBox = new VBox(5, toolbar);
+        VBox.setVgrow(taskTreeView, Priority.ALWAYS);
+        centerBox.getChildren().add(taskTreeView);
 
         // 5. Root Layout: BorderPane
         BorderPane root = new BorderPane();
