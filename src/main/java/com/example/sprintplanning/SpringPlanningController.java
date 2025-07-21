@@ -199,11 +199,57 @@ public class SpringPlanningController {
     }
 
     public void onIndentTask(ActionEvent event) {
-        System.out.println("indenting of selected task");
+        TreeItem<Task> selected = view.taskTreeView.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+
+        TreeItem<Task> parent = selected.getParent();
+        if (parent == null) return;
+
+        int index = parent.getChildren().indexOf(selected);
+        if (index <= 0) return; // Kein vorheriges Geschwister
+
+        TreeItem<Task> prevSibling = parent.getChildren().get(index - 1);
+        Task prevTask = prevSibling.getValue();
+        Task currentTask = selected.getValue();
+
+        // Aus der aktuellen Ebene entfernen
+        parent.getChildren().remove(selected);
+        parent.getValue().getChildren().remove(currentTask);
+
+        // In die Children des vorherigen Knotens verschieben
+        prevSibling.getChildren().add(selected);
+        prevTask.getChildren().add(currentTask);
+        prevSibling.setExpanded(true);
+
+        view.taskTreeView.getSelectionModel().select(selected);
+
+        save();
     }
 
     public void onOutdentTask(ActionEvent event) {
-        System.out.println("outdenting of selected task");
+        TreeItem<Task> selected = view.taskTreeView.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+
+        TreeItem<Task> parent = selected.getParent();
+        if (parent == null || parent.getParent() == null) return;
+
+        TreeItem<Task> grandParent = parent.getParent();
+        Task currentTask = selected.getValue();
+
+        // Index von parent in seiner Ebene bestimmen
+        int index = grandParent.getChildren().indexOf(parent);
+
+        // Entfernen aus alter Struktur
+        parent.getChildren().remove(selected);
+        parent.getValue().getChildren().remove(currentTask);
+
+        // Einfügen direkt hinter den parent
+        grandParent.getChildren().add(index + 1, selected);
+        grandParent.getValue().getChildren().add(index + 1, currentTask);
+
+        view.taskTreeView.getSelectionModel().select(selected);
+
+        save();
     }
 
     public void onToggleImportant(ActionEvent event) {
