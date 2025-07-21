@@ -13,7 +13,7 @@ public class SpringPlanning extends Application {
     // UI-Controls
     ListView<String> weekListView;
     TreeView<Task> taskTreeView;
-    Button btnNew, btnDelete, btnIndent, btnOutdent, btnImportant, btnUrgent, btnDone;
+    Button btnNew, btnDelete, btnIndent, btnOutdent, btnImportant, btnUrgent, btnDone, btnOptional, btnObsolete;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -27,6 +27,8 @@ public class SpringPlanning extends Application {
         btnImportant   = new Button("⭐");
         btnUrgent      = new Button("🔻");
         btnDone        = new Button("✔");
+        btnOptional    = new Button("∘");
+        btnObsolete    = new Button("\uD83D\uDEAB");
 
         // 2. Configure Controls
         weekListView.setPrefWidth(150);
@@ -34,7 +36,7 @@ public class SpringPlanning extends Application {
         taskTreeView.setEditable(true);
 
         // 3. Layout: Toolbar
-        HBox toolbar = new HBox(5, btnNew, btnDelete, btnIndent, btnOutdent, btnImportant, btnUrgent, btnDone);
+        HBox toolbar = new HBox(5, btnNew, btnDelete, btnIndent, btnOutdent, btnImportant, btnUrgent, btnOptional, btnObsolete, btnDone);
         toolbar.setPadding(new Insets(5));
         toolbar.setStyle("-fx-background-color: #EEE;");
 

@@ -33,6 +33,8 @@ public class SpringPlanningController {
         view.btnImportant.setOnAction(this::onToggleImportant);
         view.btnUrgent.setOnAction(this::onToggleUrgent);
         view.btnDone.setOnAction(this::onToggleDone);
+        view.btnOptional.setOnAction(this::onToggleOptional);
+        view.btnObsolete.setOnAction(this::onToggleObsolete);
 
         view.taskTreeView.setOnEditCommit(this::onTaskRename);
         view.taskTreeView.setCellFactory(tv -> {
@@ -62,7 +64,9 @@ public class SpringPlanningController {
                     }
                     label.append(newTask.getText());
                     cell.setText(label.toString());
-                    cell.setStyle(newTask.isUrgent() ? "-fx-underline: true;" : "");
+
+                    String style = getStyle(newTask);
+                    cell.setStyle(style);
                 } else {
                     cell.setText(null);
                     cell.setStyle("");
@@ -73,6 +77,24 @@ public class SpringPlanningController {
         });
 
         loadWeekPlans();
+    }
+
+    private static String getStyle(Task newTask) {
+        StringBuilder style = new StringBuilder();
+
+        if (newTask.isUrgent()) {
+            style.append("-fx-underline: true;");
+        }
+
+        if (newTask.isObsolete()) {
+            style.append("-fx-text-fill: red;");
+        } else if (newTask.isOptional()) {
+            style.append("-fx-text-fill: grey;");
+        } else {
+            style.append("-fx-text-fill: black;");
+        }
+
+        return style.toString();
     }
 
     public void loadWeekPlans() {
@@ -196,6 +218,27 @@ public class SpringPlanningController {
         if (task != null) {
             task.setText(event.getNewValue().getText());
             refreshTreeItem(event.getTreeItem());
+            save();
+        }
+    }
+
+    public void onToggleOptional(ActionEvent event) {
+        TreeItem<Task> selected = view.taskTreeView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            Task task = selected.getValue();
+            task.setOptional(!task.isOptional());
+            refreshTreeItem(selected);
+            save();
+        }
+    }
+
+    public void onToggleObsolete(ActionEvent event) {
+        TreeItem<Task> selected = view.taskTreeView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            Task task = selected.getValue();
+            task.setObsolete(!task.isObsolete());
+            task.setDone(false); // Wenn obsolet, nicht mehr als "done" markieren
+            refreshTreeItem(selected);
             save();
         }
     }

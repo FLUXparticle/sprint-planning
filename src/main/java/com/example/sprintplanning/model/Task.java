@@ -22,6 +22,12 @@ public class Task {
     @XmlAttribute
     private boolean open;
 
+    @XmlAttribute
+    private boolean optional;
+
+    @XmlAttribute
+    private boolean obsolete;
+
     @XmlElement(name = "task")
     private List<Task> children;
 
@@ -53,6 +59,12 @@ public class Task {
 
     public boolean isOpen() { return open; }
     public void setOpen(boolean open) { this.open = open; }
+
+    public boolean isOptional() { return optional; }
+    public void setOptional(boolean optional) { this.optional = optional; }
+
+    public boolean isObsolete() { return obsolete; }
+    public void setObsolete(boolean obsolete) { this.obsolete = obsolete; }
 
     public List<Task> getChildren() { return children; }
     public void setChildren(List<Task> children) { this.children = children; }
