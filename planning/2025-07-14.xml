@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tasks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="planning.xsd">
-    <task done="false" important="true" urgent="false" text="Woche planen" open="true">
-        <task done="true" important="false" urgent="false" text="Aufgaben aus Kalender übernehmen"/>
-        <task done="false" important="true" urgent="true" text="Kurs vorbereiten">
-            <task done="false" important="true" urgent="false" text="Folien überarbeiten"/>
-            <task done="false" important="true" urgent="true" text="Beispielcode testen"/>
-        </task>
-        <task done="false" important="false" urgent="true" text="Einkaufsliste schreiben"/>
-    </task>
+<tasks>
+   <task text="Woche planen" done="false" important="true" urgent="false" open="true">
+      <task text="Aufgaben aus Kalender übernehmen" done="true" important="false" urgent="false" open="false"/>
+      <task text="Kurs vorbereiten" done="false" important="true" urgent="true" open="true">
+         <task text="Folien überarbeiten" done="false" important="true" urgent="false" open="false"/>
+         <task text="Beispielcode testen" done="false" important="true" urgent="true" open="false"/>
+      </task>
+      <task text="Einkaufsliste schreiben" done="false" important="false" urgent="true" open="false"/>
+   </task>
 </tasks>

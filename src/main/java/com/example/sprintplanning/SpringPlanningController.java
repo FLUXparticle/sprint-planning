@@ -1,6 +1,7 @@
 package com.example.sprintplanning;
 
 import com.example.sprintplanning.model.*;
+import jakarta.xml.bind.*;
 import javafx.event.*;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
@@ -112,6 +113,12 @@ public class SpringPlanningController {
         // Wenn der Nutzer ein- oder ausklappt, übertrage das ins Model
         item.expandedProperty().addListener((obs, wasExpanded, isNowExpanded) -> {
             task.setOpen(isNowExpanded);
+            try {
+                model.saveWeekPlan();
+            } catch (JAXBException e) {
+                // TODO throw new RuntimeException(e);
+                e.printStackTrace();
+            }
         });
 
         // Rekursiv Kind-Knoten anlegen

@@ -10,17 +10,27 @@ import static java.util.Collections.*;
 public class SpringPlanningModel {
 
     private final Unmarshaller unmarshaller;
+    private final Marshaller marshaller;
 
+    private File currentFile;
     private Tasks tasks;
 
     public SpringPlanningModel() throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(Tasks.class);
         unmarshaller = context.createUnmarshaller();
+        marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
     }
 
     public void loadWeekPlan(String pathname) throws JAXBException {
-        File file = new File(pathname);
-        tasks = (Tasks) unmarshaller.unmarshal(file);
+        currentFile = new File(pathname);
+        tasks = (Tasks) unmarshaller.unmarshal(currentFile);
+    }
+
+    public void saveWeekPlan() throws JAXBException {
+        if (currentFile != null && tasks != null) {
+            marshaller.marshal(tasks, currentFile);
+        }
     }
 
     public static void main(String[] args) throws JAXBException {
