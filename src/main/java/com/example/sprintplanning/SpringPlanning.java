@@ -13,7 +13,9 @@ public class SpringPlanning extends Application {
     // UI-Controls
     ListView<String> weekListView;
     TreeView<Task> taskTreeView;
-    Button btnNew, btnDelete, btnIndent, btnOutdent, btnImportant, btnUrgent, btnDone, btnOptional, btnObsolete;
+    Button btnNew, btnDelete, btnIndent, btnOutdent;
+    Button btnMoveUp, btnMoveDown;
+    Button btnImportant, btnUrgent, btnDone, btnOptional, btnObsolete;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -24,6 +26,8 @@ public class SpringPlanning extends Application {
         btnDelete      = new Button("Löschen");
         btnIndent      = new Button("Einrücken");
         btnOutdent     = new Button("Ausrücken");
+        btnMoveUp      = new Button("🔼");
+        btnMoveDown    = new Button("🔽");
         btnImportant   = new Button("⭐");
         btnUrgent      = new Button("🔻");
         btnDone        = new Button("✔");
@@ -36,7 +40,12 @@ public class SpringPlanning extends Application {
         taskTreeView.setEditable(true);
 
         // 3. Layout: Toolbar
-        HBox toolbar = new HBox(5, btnNew, btnDelete, btnIndent, btnOutdent, btnImportant, btnUrgent, btnOptional, btnObsolete, btnDone);
+        HBox toolbar = new HBox(5,
+                btnNew, btnDelete,
+                btnIndent, btnOutdent,
+                btnMoveUp, btnMoveDown,
+                btnImportant, btnUrgent, btnOptional, btnObsolete, btnDone
+        );
         toolbar.setPadding(new Insets(5));
         toolbar.setStyle("-fx-background-color: #EEE;");
 

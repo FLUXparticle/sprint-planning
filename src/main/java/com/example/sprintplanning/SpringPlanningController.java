@@ -31,6 +31,8 @@ public class SpringPlanningController {
         view.btnDelete.setOnAction(this::onDeleteTask);
         view.btnIndent.setOnAction(this::onIndentTask);
         view.btnOutdent.setOnAction(this::onOutdentTask);
+        view.btnMoveUp.setOnAction(this::onMoveUp);
+        view.btnMoveDown.setOnAction(this::onMoveDown);
         view.btnImportant.setOnAction(this::onToggleImportant);
         view.btnUrgent.setOnAction(this::onToggleUrgent);
         view.btnDone.setOnAction(this::onToggleDone);
@@ -278,6 +280,54 @@ public class SpringPlanningController {
         selected.getChildren().addAll(trailingSiblings);
         selectedTask.getChildren().addAll(trailingTasks);
         selected.setExpanded(true);
+
+        view.taskTreeView.getSelectionModel().select(selected);
+        save();
+    }
+
+    public void onMoveUp(ActionEvent event) {
+        TreeItem<Task> selected = view.taskTreeView.getSelectionModel().getSelectedItem();
+        if (selected == null || selected.getParent() == null) return;
+
+        TreeItem<Task> parent = selected.getParent();
+        List<TreeItem<Task>> siblings = parent.getChildren();
+        List<Task> siblingTasks = parent.getValue().getChildren();
+
+        int index = siblings.indexOf(selected);
+        if (index <= 0) return; // Bereits ganz oben oder nicht gefunden
+
+        // Swap in TreeView
+        siblings.remove(index);
+        siblings.add(index - 1, selected);
+
+        // Swap im Model
+        Task task = selected.getValue();
+        siblingTasks.remove(index);
+        siblingTasks.add(index - 1, task);
+
+        view.taskTreeView.getSelectionModel().select(selected);
+        save();
+    }
+
+    public void onMoveDown(ActionEvent event) {
+        TreeItem<Task> selected = view.taskTreeView.getSelectionModel().getSelectedItem();
+        if (selected == null || selected.getParent() == null) return;
+
+        TreeItem<Task> parent = selected.getParent();
+        List<TreeItem<Task>> siblings = parent.getChildren();
+        List<Task> siblingTasks = parent.getValue().getChildren();
+
+        int index = siblings.indexOf(selected);
+        if (index < 0 || index >= siblings.size() - 1) return; // Bereits ganz unten oder nicht gefunden
+
+        // Swap in TreeView
+        siblings.remove(index);
+        siblings.add(index + 1, selected);
+
+        // Swap im Model
+        Task task = selected.getValue();
+        siblingTasks.remove(index);
+        siblingTasks.add(index + 1, task);
 
         view.taskTreeView.getSelectionModel().select(selected);
         save();
