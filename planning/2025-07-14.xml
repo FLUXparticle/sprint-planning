@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tasks>
-   <task text="Woche planen" done="false" important="true" urgent="false" open="true">
+   <task text="Woche planen" done="false" important="false" urgent="false" open="true">
       <task text="Aufgaben aus Kalender übernehmen" done="true" important="false" urgent="false" open="false"/>
-      <task text="Kurs vorbereiten" done="false" important="true" urgent="true" open="true">
-         <task text="Folien überarbeiten" done="false" important="true" urgent="false" open="false"/>
-         <task text="Beispielcode testen" done="false" important="true" urgent="true" open="false"/>
+      <task text="Kurs vorbereiten" done="false" important="false" urgent="false" open="true">
+         <task text="Folien überarbeiten" done="false" important="false" urgent="false" open="false"/>
+         <task text="Beispielcode testen" done="false" important="false" urgent="true" open="false"/>
       </task>
-      <task text="Einkaufsliste schreiben" done="false" important="false" urgent="true" open="false"/>
+      <task text="Einkaufsliste schreiben" done="false" important="false" urgent="false" open="false"/>
    </task>
 </tasks>

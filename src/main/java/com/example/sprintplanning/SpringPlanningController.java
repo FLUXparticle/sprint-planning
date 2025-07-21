@@ -32,6 +32,27 @@ public class SpringPlanningController {
         view.btnDone.setOnAction(this::onToggleDone);
 
         view.taskTreeView.setOnEditCommit(this::onTaskRename);
+        view.taskTreeView.setCellFactory(tv -> new TreeCell<>() {
+            @Override
+            protected void updateItem(Task task, boolean empty) {
+                super.updateItem(task, empty);
+                if (empty || task == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    StringBuilder label = new StringBuilder();
+
+                    if (task.isImportant()) {
+                        label.append("⭐ ");
+                    }
+
+                    label.append(task.getText());
+                    setText(label.toString());
+
+                    setStyle(task.isUrgent() ? "-fx-underline: true;" : "");
+                }
+            }
+        });
 
         loadWeekPlans();
     }
@@ -89,11 +110,23 @@ public class SpringPlanningController {
     }
 
     public void onToggleImportant(ActionEvent event) {
-        System.out.println("toggling important flag");
+        TreeItem<Task> selected = view.taskTreeView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            Task task = selected.getValue();
+            task.setImportant(!task.isImportant());
+            refreshTreeItem(selected);
+            save();
+        }
     }
 
     public void onToggleUrgent(ActionEvent event) {
-        System.out.println("toggling urgent flag");
+        TreeItem<Task> selected = view.taskTreeView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            Task task = selected.getValue();
+            task.setUrgent(!task.isUrgent());
+            refreshTreeItem(selected);
+            save();
+        }
     }
 
     public void onToggleDone(ActionEvent event) {
@@ -113,12 +146,7 @@ public class SpringPlanningController {
         // Wenn der Nutzer ein- oder ausklappt, übertrage das ins Model
         item.expandedProperty().addListener((obs, wasExpanded, isNowExpanded) -> {
             task.setOpen(isNowExpanded);
-            try {
-                model.saveWeekPlan();
-            } catch (JAXBException e) {
-                // TODO throw new RuntimeException(e);
-                e.printStackTrace();
-            }
+            save();
         });
 
         // Rekursiv Kind-Knoten anlegen
@@ -126,6 +154,21 @@ public class SpringPlanningController {
             item.getChildren().add(createTreeItem(child));
         }
         return item;
+    }
+
+    private void refreshTreeItem(TreeItem<Task> item) {
+        // Workaround zum Aktualisieren der Darstellung (da TreeCell nicht automatisch reagiert)
+        Task t = item.getValue();
+        item.setValue(null);
+        item.setValue(t);
+    }
+
+    private void save() {
+        try {
+            model.saveWeekPlan();
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -33,8 +33,6 @@ public class SpringPlanning extends Application {
         taskTreeView.setShowRoot(false);
         taskTreeView.setEditable(true);
 
-        // TODO: setCellFactory auf TreeView, um Inline-Editing etc. zu ermöglichen
-
         // 3. Layout: Toolbar
         HBox toolbar = new HBox(5, btnNew, btnDelete, btnIndent, btnOutdent, btnImportant, btnUrgent, btnDone);
         toolbar.setPadding(new Insets(5));
