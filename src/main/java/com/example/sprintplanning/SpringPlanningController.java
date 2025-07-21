@@ -4,7 +4,9 @@ import com.example.sprintplanning.model.*;
 import jakarta.xml.bind.*;
 import javafx.event.*;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.*;
 import javafx.scene.input.*;
+import javafx.util.*;
 
 import java.io.*;
 
@@ -32,26 +34,41 @@ public class SpringPlanningController {
         view.btnDone.setOnAction(this::onToggleDone);
 
         view.taskTreeView.setOnEditCommit(this::onTaskRename);
-        view.taskTreeView.setCellFactory(tv -> new TreeCell<>() {
-            @Override
-            protected void updateItem(Task task, boolean empty) {
-                super.updateItem(task, empty);
-                if (empty || task == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    StringBuilder label = new StringBuilder();
+        view.taskTreeView.setCellFactory(tv -> {
+            TextFieldTreeCell<Task> cell = new TextFieldTreeCell<>(new StringConverter<>() {
+                @Override
+                public String toString(Task task) {
+                    return task == null ? "" : task.getText();
+                }
 
-                    if (task.isImportant()) {
+                @Override
+                public Task fromString(String string) {
+                    return new Task(string);
+                }
+            });
+
+            cell.setOnMouseClicked(e -> {
+                if (e.getClickCount() == 2 && !cell.isEmpty()) {
+                    view.taskTreeView.edit(cell.getTreeItem());
+                }
+            });
+
+            cell.itemProperty().addListener((obs, oldTask, newTask) -> {
+                if (newTask != null) {
+                    StringBuilder label = new StringBuilder();
+                    if (newTask.isImportant()) {
                         label.append("⭐ ");
                     }
-
-                    label.append(task.getText());
-                    setText(label.toString());
-
-                    setStyle(task.isUrgent() ? "-fx-underline: true;" : "");
+                    label.append(newTask.getText());
+                    cell.setText(label.toString());
+                    cell.setStyle(newTask.isUrgent() ? "-fx-underline: true;" : "");
+                } else {
+                    cell.setText(null);
+                    cell.setStyle("");
                 }
-            }
+            });
+
+            return cell;
         });
 
         loadWeekPlans();
@@ -152,7 +169,12 @@ public class SpringPlanningController {
     }
 
     public void onTaskRename(TreeView.EditEvent<Task> event) {
-        System.out.println("renaming of task on edit commit");
+        Task task = event.getTreeItem().getValue();
+        if (task != null) {
+            task.setText(event.getNewValue().getText());
+            refreshTreeItem(event.getTreeItem());
+            save();
+        }
     }
 
     private TreeItem<Task> createTreeItem(Task task) {
