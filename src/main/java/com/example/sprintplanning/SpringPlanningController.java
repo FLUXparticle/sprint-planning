@@ -2,6 +2,7 @@ package com.example.sprintplanning;
 
 import com.example.sprintplanning.model.*;
 import jakarta.xml.bind.*;
+import javafx.beans.property.*;
 import javafx.event.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
@@ -38,15 +39,31 @@ public class SpringPlanningController {
 
         view.taskTreeView.setOnEditCommit(this::onTaskRename);
         view.taskTreeView.setCellFactory(tv -> {
-            TextFieldTreeCell<Task> cell = new TextFieldTreeCell<>(new StringConverter<>() {
+            CheckBoxTreeCell<Task> cell = new CheckBoxTreeCell<>(param -> {
+                if (param instanceof CheckBoxTreeItem<Task> item) {
+                    if (item.getValue() != null) {
+                        return new SimpleBooleanProperty(item.getValue().isDone()) {
+                            @Override
+                            public void set(boolean newValue) {
+                                super.set(newValue);
+                                item.getValue().setDone(newValue);
+                                refreshTreeItem(item);
+                                save();
+                            }
+                        };
+                    }
+                }
+                return null;
+            }, new StringConverter<>() {
                 @Override
-                public String toString(Task task) {
+                public String toString(TreeItem<Task> item) {
+                    Task task = item.getValue();
                     return task == null ? "" : task.getText();
                 }
 
                 @Override
-                public Task fromString(String string) {
-                    return new Task(string);
+                public TreeItem<Task> fromString(String string) {
+                    return createTreeItem(new Task(string));
                 }
             });
 
@@ -243,11 +260,17 @@ public class SpringPlanningController {
         }
     }
 
-    private TreeItem<Task> createTreeItem(Task task) {
-        TreeItem<Task> item = new TreeItem<>(task);
+    private CheckBoxTreeItem<Task> createTreeItem(Task task) {
+        CheckBoxTreeItem<Task> item = new CheckBoxTreeItem<>(task);
+        item.setSelected(task.isDone());
 
         // Setze initial den Expand-Status entsprechend dem Model
         item.setExpanded(task.isOpen());
+
+        item.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            task.setDone(newVal);
+            save();
+        });
 
         // Wenn der Nutzer ein- oder ausklappt, übertrage das ins Model
         item.expandedProperty().addListener((obs, wasExpanded, isNowExpanded) -> {
@@ -259,6 +282,7 @@ public class SpringPlanningController {
         for (Task child : task.getChildren()) {
             item.getChildren().add(createTreeItem(child));
         }
+
         return item;
     }
 
