@@ -19,6 +19,9 @@ public class Task {
     @XmlAttribute
     private boolean urgent;
 
+    @XmlAttribute
+    private boolean open;
+
     @XmlElement(name = "task")
     private List<Task> children = new ArrayList<>();
 
@@ -41,6 +44,9 @@ public class Task {
 
     public boolean isUrgent() { return urgent; }
     public void setUrgent(boolean urgent) { this.urgent = urgent; }
+
+    public boolean isOpen() { return open; }
+    public void setOpen(boolean open) { this.open = open; }
 
     public List<Task> getChildren() { return children; }
     public void setChildren(List<Task> children) { this.children = children; }

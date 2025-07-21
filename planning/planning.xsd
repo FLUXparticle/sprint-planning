@@ -15,5 +15,6 @@
         <xs:attribute name="done" type="xs:boolean"/>
         <xs:attribute name="important" type="xs:boolean"/>
         <xs:attribute name="urgent" type="xs:boolean"/>
+        <xs:attribute name="open"      type="xs:boolean"/>
     </xs:complexType>
 </xs:schema>

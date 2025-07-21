@@ -105,6 +105,16 @@ public class SpringPlanningController {
 
     private TreeItem<Task> createTreeItem(Task task) {
         TreeItem<Task> item = new TreeItem<>(task);
+
+        // Setze initial den Expand-Status entsprechend dem Model
+        item.setExpanded(task.isOpen());
+
+        // Wenn der Nutzer ein- oder ausklappt, übertrage das ins Model
+        item.expandedProperty().addListener((obs, wasExpanded, isNowExpanded) -> {
+            task.setOpen(isNowExpanded);
+        });
+
+        // Rekursiv Kind-Knoten anlegen
         for (Task child : task.getChildren()) {
             item.getChildren().add(createTreeItem(child));
         }
