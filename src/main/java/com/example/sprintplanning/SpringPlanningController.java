@@ -94,7 +94,25 @@ public class SpringPlanningController {
     }
 
     public void onNewTask(ActionEvent event) {
-        System.out.println("creation of a new task");
+        TreeItem<Task> selected = view.taskTreeView.getSelectionModel().getSelectedItem();
+
+        TreeItem<Task> parent;
+        if (selected == null) {
+            parent = view.taskTreeView.getRoot();
+        } else {
+            parent = selected;
+        }
+
+        Task newTask = new Task("Neue Aufgabe");
+        TreeItem<Task> newItem = createTreeItem(newTask);
+
+        parent.getValue().getChildren().add(newTask);   // Model ergänzen
+        parent.getChildren().add(newItem);              // TreeView ergänzen
+        parent.setExpanded(true);
+
+        view.taskTreeView.getSelectionModel().select(newItem);
+
+        save();
     }
 
     public void onDeleteTask(ActionEvent event) {

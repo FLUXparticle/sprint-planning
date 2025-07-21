@@ -5,6 +5,7 @@
       <task text="Kurs vorbereiten" done="false" important="false" urgent="false" open="true">
          <task text="Folien überarbeiten" done="false" important="false" urgent="false" open="false"/>
          <task text="Beispielcode testen" done="false" important="false" urgent="true" open="false"/>
+         <task text="Neue Aufgabe" done="false" important="false" urgent="false" open="false"/>
       </task>
       <task text="Einkaufsliste schreiben" done="false" important="false" urgent="false" open="false"/>
    </task>
