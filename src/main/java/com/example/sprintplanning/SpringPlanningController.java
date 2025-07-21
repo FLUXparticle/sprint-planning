@@ -210,19 +210,31 @@ public class SpringPlanningController {
 
         TreeItem<Task> prevSibling = parent.getChildren().get(index - 1);
         Task prevTask = prevSibling.getValue();
-        Task currentTask = selected.getValue();
 
-        // Aus der aktuellen Ebene entfernen
+        // Schritt 1: Kinder des selektierten Knotens sichern
+        List<TreeItem<Task>> childrenToDetach = new ArrayList<>(selected.getChildren());
+        List<Task> childrenModel = new ArrayList<>(selected.getValue().getChildren());
+
+        // Schritt 2: Entferne Kinder aus dem selektierten Knoten
+        selected.getChildren().clear();
+        selected.getValue().getChildren().clear();
+
+        // Schritt 3: Entferne selektierten Knoten aus Parent
         parent.getChildren().remove(selected);
-        parent.getValue().getChildren().remove(currentTask);
+        parent.getValue().getChildren().remove(selected.getValue());
 
-        // In die Children des vorherigen Knotens verschieben
+        // Schritt 4: Hänge selektierten Knoten als Kind an vorheriges Geschwister
         prevSibling.getChildren().add(selected);
-        prevTask.getChildren().add(currentTask);
+        prevTask.getChildren().add(selected.getValue());
         prevSibling.setExpanded(true);
 
-        view.taskTreeView.getSelectionModel().select(selected);
+        // Schritt 5: Hänge die ehemaligen Kinder des selektierten Knotens nun **nach** dem selektierten Knoten beim neuen Parent ein
+        int insertIndex = prevTask.getChildren().indexOf(selected.getValue()) + 1;
+        prevTask.getChildren().addAll(insertIndex, childrenModel);
+        prevSibling.getChildren().addAll(insertIndex, childrenToDetach);
 
+        // Fokus zurück auf verschobenen Knoten
+        view.taskTreeView.getSelectionModel().select(selected);
         save();
     }
 
@@ -234,21 +246,40 @@ public class SpringPlanningController {
         if (parent == null || parent.getParent() == null) return;
 
         TreeItem<Task> grandParent = parent.getParent();
-        Task currentTask = selected.getValue();
+        Task selectedTask = selected.getValue();
+        Task parentTask = parent.getValue();
 
-        // Index von parent in seiner Ebene bestimmen
-        int index = grandParent.getChildren().indexOf(parent);
+        int index = parent.getChildren().indexOf(selected);
 
-        // Entfernen aus alter Struktur
+        // 1. Sammle alle nachfolgenden Geschwister (die unter dem verschobenen Knoten stehen)
+        List<TreeItem<Task>> trailingSiblings = new ArrayList<>();
+        List<Task> trailingTasks = new ArrayList<>();
+
+        for (int i = index + 1; i < parent.getChildren().size(); i++) {
+            TreeItem<Task> item = parent.getChildren().get(i);
+            trailingSiblings.add(item);
+            trailingTasks.add(item.getValue());
+        }
+
+        // 2. Entferne die nachfolgenden aus der alten Ebene
+        parent.getChildren().removeAll(trailingSiblings);
+        parentTask.getChildren().removeAll(trailingTasks);
+
+        // 3. Entferne den selektierten Knoten aus der alten Ebene
         parent.getChildren().remove(selected);
-        parent.getValue().getChildren().remove(currentTask);
+        parentTask.getChildren().remove(selectedTask);
 
-        // Einfügen direkt hinter den parent
-        grandParent.getChildren().add(index + 1, selected);
-        grandParent.getValue().getChildren().add(index + 1, currentTask);
+        // 4. Füge den selektierten Knoten beim Grandparent ein (hinter Parent)
+        int parentIndex = grandParent.getChildren().indexOf(parent);
+        grandParent.getChildren().add(parentIndex + 1, selected);
+        grandParent.getValue().getChildren().add(parentIndex + 1, selectedTask);
+
+        // 5. Hänge die "Nachfolger" als Kinder unter den selektierten Knoten
+        selected.getChildren().addAll(trailingSiblings);
+        selectedTask.getChildren().addAll(trailingTasks);
+        selected.setExpanded(true);
 
         view.taskTreeView.getSelectionModel().select(selected);
-
         save();
     }
 

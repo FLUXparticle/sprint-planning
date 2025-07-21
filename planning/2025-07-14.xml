@@ -3,9 +3,9 @@
    <task text="Woche planen" done="false" important="false" urgent="false" open="true" optional="false" obsolete="false">
       <task text="Aufgaben aus Kalender übernehmen" done="false" important="false" urgent="false" open="false" optional="false" obsolete="false"/>
       <task text="Kurs vorbereiten" done="false" important="false" urgent="false" open="true" optional="false" obsolete="false">
-         <task text="Folien überarbeiten" done="false" important="false" urgent="false" open="false" optional="true" obsolete="false"/>
+         <task text="Folien überarbeiten" done="false" important="false" urgent="false" open="true" optional="true" obsolete="false"/>
+         <task text="Beispielcode testen" done="false" important="false" urgent="true" open="true" optional="false" obsolete="false"/>
       </task>
-      <task text="Beispielcode testen" done="false" important="false" urgent="true" open="false" optional="false" obsolete="false"/>
       <task text="Einkaufsliste schreiben" done="false" important="false" urgent="false" open="false" optional="false" obsolete="false"/>
    </task>
 </tasks>
