@@ -39,6 +39,7 @@ public class MarkdownImporter {
 
         Pattern heading = Pattern.compile("^(#{2,})\\s*(.+)$");
         Pattern checkbox = Pattern.compile("^(\\s*)- \\[([ xX])\\]\\s*(.+)$");
+        int lastHeadlineLevel = 0;
         for (String raw : lines) {
             String line = raw.strip();
             if (line.isEmpty()) continue;
@@ -53,13 +54,15 @@ public class MarkdownImporter {
             if (mH.matches()) {
                 int hashes = mH.group(1).length();
                 level = hashes - 2;  // "##" → 0, "###" → 1, …
-                text = stripMarkdown(mH.group(2));
+                lastHeadlineLevel = level;
+                text = mH.group(2).trim();
+                if (text.isBlank()) { continue; }
             }
             else if (mC.matches()) {
                 int spaces = mC.group(1).length();
-                level = spaces / 4;  // 4 spaces = one deeper level
+                level = lastHeadlineLevel + 1 + spaces / 4;  // 4 spaces = one deeper level
                 done = mC.group(2).equalsIgnoreCase("x");
-                text = stripMarkdown(mC.group(3));
+                text = mC.group(3).trim();
             } else {
                 // sonst überspringen
                 continue;
@@ -70,6 +73,8 @@ public class MarkdownImporter {
                 important = true;
                 text = text.substring(2, text.length() - 2).trim();
             }
+
+            text = stripMarkdown(text);
 
             Task task = new Task(text);
             task.setDone(done);
