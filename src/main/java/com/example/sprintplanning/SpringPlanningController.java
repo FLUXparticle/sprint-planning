@@ -2,12 +2,10 @@ package com.example.sprintplanning;
 
 import com.example.sprintplanning.model.*;
 import jakarta.xml.bind.*;
-import javafx.beans.property.*;
 import javafx.event.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.input.*;
-import javafx.util.*;
 
 import java.io.*;
 import java.util.*;
@@ -39,55 +37,17 @@ public class SpringPlanningController {
         view.btnOptional.setOnAction(this::onToggleOptional);
         view.btnObsolete.setOnAction(this::onToggleObsolete);
 
+
+
         view.taskTreeView.setOnEditCommit(this::onTaskRename);
+        view.taskTreeView.setEditable(true);
         view.taskTreeView.setCellFactory(tv -> {
-            CheckBoxTreeCell<Task> cell = new CheckBoxTreeCell<>(param -> {
-                if (param instanceof CheckBoxTreeItem<Task> item) {
-                    if (item.getValue() != null) {
-                        return new SimpleBooleanProperty(item.getValue().isDone()) {
-                            @Override
-                            public void set(boolean newValue) {
-                                super.set(newValue);
-                                item.getValue().setDone(newValue);
-                                refreshTreeItem(item);
-                                save();
-                            }
-                        };
-                    }
-                }
-                return null;
-            }, new StringConverter<>() {
-                @Override
-                public String toString(TreeItem<Task> item) {
-                    Task task = item.getValue();
-                    return task == null ? "" : task.getText();
-                }
-
-                @Override
-                public TreeItem<Task> fromString(String string) {
-                    return createTreeItem(new Task(string));
-                }
-            });
-
-            cell.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && !cell.isEmpty()) {
-                    view.taskTreeView.edit(cell.getTreeItem());
-                }
-            });
+            TextFieldTreeCell<Task> cell = new TextFieldTreeCell<>(new TaskStringConverter());
 
             cell.itemProperty().addListener((obs, oldTask, newTask) -> {
                 if (newTask != null) {
-                    StringBuilder label = new StringBuilder();
-                    if (newTask.isImportant()) {
-                        label.append("⭐ ");
-                    }
-                    label.append(newTask.getText());
-                    cell.setText(label.toString());
-
-                    String style = getStyle(newTask);
-                    cell.setStyle(style);
+                    cell.setStyle(getStyle(newTask));
                 } else {
-                    cell.setText(null);
                     cell.setStyle("");
                 }
             });
@@ -104,6 +64,7 @@ public class SpringPlanningController {
                     ClipboardContent content = new ClipboardContent();
                     content.putString(fullPathText);
                     clipboard.setContent(content);
+                    event.consume(); // Verhindert Standardverhalten
                 }
             }
         });
@@ -369,7 +330,13 @@ public class SpringPlanningController {
     }
 
     public void onToggleDone(ActionEvent event) {
-        System.out.println("toggling done flag");
+        TreeItem<Task> selected = view.taskTreeView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            Task task = selected.getValue();
+            task.setDone(!task.isDone());
+            refreshTreeItem(selected);
+            save();
+        }
     }
 
     public void onTaskRename(TreeView.EditEvent<Task> event) {
@@ -402,17 +369,20 @@ public class SpringPlanningController {
         }
     }
 
-    private CheckBoxTreeItem<Task> createTreeItem(Task task) {
-        CheckBoxTreeItem<Task> item = new CheckBoxTreeItem<>(task);
-        item.setSelected(task.isDone());
+    private TreeItem<Task> createTreeItem(Task task) {
+        TreeItem<Task> item = new TreeItem<>(task);
+
+        updateCheckbox(item);
 
         // Setze initial den Expand-Status entsprechend dem Model
         item.setExpanded(task.isOpen());
 
+/*
         item.selectedProperty().addListener((obs, oldVal, newVal) -> {
             task.setDone(newVal);
             save();
         });
+*/
 
         // Wenn der Nutzer ein- oder ausklappt, übertrage das ins Model
         item.expandedProperty().addListener((obs, wasExpanded, isNowExpanded) -> {
@@ -430,9 +400,17 @@ public class SpringPlanningController {
 
     private void refreshTreeItem(TreeItem<Task> item) {
         // Workaround zum Aktualisieren der Darstellung (da TreeCell nicht automatisch reagiert)
-        Task t = item.getValue();
+        Task task = item.getValue();
         item.setValue(null);
-        item.setValue(t);
+        item.setValue(task);
+
+        updateCheckbox(item);
+    }
+
+    private static void updateCheckbox(TreeItem<Task> item) {
+        Task task = item.getValue();
+        Label icon = new Label(task.isDone() ? "\u2611" : "\u2610");
+        item.setGraphic(icon);
     }
 
     private void save() {
