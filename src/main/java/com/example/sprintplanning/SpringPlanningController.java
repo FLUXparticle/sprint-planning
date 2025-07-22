@@ -1,6 +1,7 @@
 package com.example.sprintplanning;
 
 import com.example.sprintplanning.model.*;
+import de.jensd.fx.glyphs.fontawesome.*;
 import jakarta.xml.bind.*;
 import javafx.event.*;
 import javafx.scene.control.*;
@@ -409,7 +410,7 @@ public class SpringPlanningController {
 
     private static void updateCheckbox(TreeItem<Task> item) {
         Task task = item.getValue();
-        Label icon = new Label(task.isDone() ? "\u2611" : "\u2610");
+        FontAwesomeIconView icon = new FontAwesomeIconView(task.isDone() ? FontAwesomeIcon.CHECK_SQUARE_ALT : FontAwesomeIcon.SQUARE_ALT);
         item.setGraphic(icon);
     }
 
