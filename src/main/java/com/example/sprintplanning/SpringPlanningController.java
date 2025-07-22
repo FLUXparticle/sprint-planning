@@ -122,6 +122,8 @@ public class SpringPlanningController {
             style.append("-fx-text-fill: red;");
         } else if (newTask.isOptional()) {
             style.append("-fx-text-fill: grey;");
+        } else if (newTask.isImportant()) {
+            style.append("-fx-text-fill: blue;");
         } else {
             style.append("-fx-text-fill: black;");
         }
