@@ -7,14 +7,16 @@ class TaskStringConverter extends StringConverter<Task> {
 
     @Override
     public String toString(Task task) {
-//        System.out.println("toString: " + task);
-        return task == null ? "" : task.getText();
+        String string = task == null ? "" : task.getText();
+//        System.out.println("toString(" + string + ") = " + System.identityHashCode(task));
+        return string;
     }
 
     @Override
     public Task fromString(String string) {
-//        System.out.println("fromString: " + string);
-        return new Task(string);
+        Task task = new Task(string);
+//        System.out.println("fromString(" + string + ") = " + System.identityHashCode(task));
+        return task;
     }
 
 }

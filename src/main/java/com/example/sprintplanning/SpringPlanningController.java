@@ -43,10 +43,19 @@ public class SpringPlanningController {
         view.taskTreeView.setOnEditCommit(this::onTaskRename);
         view.taskTreeView.setEditable(true);
         view.taskTreeView.setCellFactory(tv -> {
-            TextFieldTreeCell<Task> cell = new TextFieldTreeCell<>(new TaskStringConverter());
+            TextFieldTreeCell<Task> cell = new TextFieldTreeCell<>(new TaskStringConverter()) {
+                @Override
+                public void commitEdit(Task newValue) {
+                    Task oldValue = getItem();
+//                    System.out.println("commitEdit(" + newValue.getText() + ") = " + System.identityHashCode(oldValue) + " -> " + System.identityHashCode(newValue));
+                    oldValue.setText(newValue.getText());
+                    super.commitEdit(oldValue);
+                }
+            };
 
             cell.itemProperty().addListener((obs, oldTask, newTask) -> {
                 if (newTask != null) {
+//                    System.out.println("cell.item(" + newTask.getText() + ") = " + System.identityHashCode(oldTask) + " -> " + System.identityHashCode(newTask));
                     cell.setStyle(getStyle(newTask));
                 } else {
                     cell.setStyle("");
@@ -354,10 +363,10 @@ public class SpringPlanningController {
     }
 
     public void onTaskRename(TreeView.EditEvent<Task> event) {
-        Task task = event.getTreeItem().getValue();
+        TreeItem<Task> treeItem = event.getTreeItem();
+        Task task = treeItem.getValue();
         if (task != null) {
-            task.setText(event.getNewValue().getText());
-            refreshTreeItem(event.getTreeItem());
+            refreshTreeItem(treeItem);
             save();
         }
     }
@@ -415,6 +424,8 @@ public class SpringPlanningController {
     private void refreshTreeItem(TreeItem<Task> item) {
         // Workaround zum Aktualisieren der Darstellung (da TreeCell nicht automatisch reagiert)
         Task task = item.getValue();
+//        System.out.println("refreshTreeItem(" + task.getText() + ") = " + System.identityHashCode(task));
+
         item.setValue(null);
         item.setValue(task);
 
@@ -429,7 +440,9 @@ public class SpringPlanningController {
 
     private void save() {
         try {
+//            System.out.println("save()");
             model.saveWeekPlan();
+            view.taskTreeView.refresh();  // ensure UI sync
         } catch (JAXBException e) {
             e.printStackTrace();
         }
