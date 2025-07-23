@@ -165,14 +165,27 @@ public class SpringPlanningController {
         Task parentTask = parentItem.getValue();
         Task selectedTask = selected.getValue();
 
+        // Bestimme neuen Auswahlknoten
+        int index = parentItem.getChildren().indexOf(selected);
+        int totalSiblings = parentItem.getChildren().size();
+
         // Entferne aus Model
         parentTask.getChildren().remove(selectedTask);
 
         // Entferne aus TreeView
         parentItem.getChildren().remove(selected);
 
-        // Auswahl zurück auf Parent setzen
-        view.taskTreeView.getSelectionModel().select(parentItem);
+        // Auswahl auf den nächsten oder vorherigen Eintrag oder Parent setzen
+        TreeItem<Task> newSelected = null;
+        if (index < totalSiblings - 1) {
+            newSelected = parentItem.getChildren().get(index);
+        } else if (index > 0) {
+            newSelected = parentItem.getChildren().get(index - 1);
+        } else {
+            newSelected = parentItem;
+        }
+
+        view.taskTreeView.getSelectionModel().select(newSelected);
 
         save();
     }
