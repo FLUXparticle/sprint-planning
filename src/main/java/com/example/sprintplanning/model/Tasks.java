@@ -5,6 +5,7 @@ import jakarta.xml.bind.annotation.*;
 import java.util.*;
 
 @XmlRootElement(name = "tasks")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Tasks {
 
     @XmlElement(name = "task")

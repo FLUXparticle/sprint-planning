@@ -13,15 +13,31 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <javafx.version>17.0.16</javafx.version>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>de.fluxparticle</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>0.0.2</version>
+                <configuration>
+                    <name>SprintPlanning</name>
+                    <mainClass>sprint.planning/com.example.sprintplanning.SpringPlanning</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
 
-        <!-- EclipseLink MOXy -->
+        <!-- JAXB Runtime -->
         <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.moxy</artifactId>
-            <version>4.0.7</version>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.5</version>
         </dependency>
 
         <!-- FontAwesomeFX -->
@@ -29,6 +45,18 @@
             <groupId>de.jensd</groupId>
             <artifactId>fontawesomefx-fontawesome</artifactId>
             <version>4.7.0-9.1.2</version>
+        </dependency>
+
+        <!-- JavaFX -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
 
     </dependencies>
