@@ -22,7 +22,7 @@
             <plugin>
                 <groupId>de.fluxparticle</groupId>
                 <artifactId>jpackage-maven-plugin</artifactId>
-                <version>0.0.2-SNAPHOT</version>
+                <version>0.0.2-SNAPSHOT</version>
                 <configuration>
                     <name>SprintPlanning</name>
                     <mainClass>sprint.planning/com.example.sprintplanning.SprintPlanning</mainClass>
