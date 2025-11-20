@@ -25,7 +25,7 @@
                 <version>0.0.2</version>
                 <configuration>
                     <name>SprintPlanning</name>
-                    <mainClass>sprint.planning/com.example.sprintplanning.SpringPlanning</mainClass>
+                    <mainClass>sprint.planning/com.example.sprintplanning.SprintPlanning</mainClass>
                 </configuration>
             </plugin>
         </plugins>

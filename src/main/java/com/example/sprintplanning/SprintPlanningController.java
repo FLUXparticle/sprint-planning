@@ -11,15 +11,15 @@ import javafx.scene.input.*;
 import java.io.*;
 import java.util.*;
 
-public class SpringPlanningController {
+public class SprintPlanningController {
 
     private static final File FOLDER = new File("planning");
 
-    private final SpringPlanning view;
+    private final SprintPlanning view;
 
-    private final SpringPlanningModel model;
+    private final SprintPlanningModel model;
 
-    public SpringPlanningController(SpringPlanning view, SpringPlanningModel model) {
+    public SprintPlanningController(SprintPlanning view, SprintPlanningModel model) {
         this.view = view;
         this.model = model;
 

@@ -8,7 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 
-public class SpringPlanning extends Application {
+public class SprintPlanning extends Application {
 
     // UI-Controls
     ListView<String> weekListView;
@@ -66,8 +66,8 @@ public class SpringPlanning extends Application {
         Scene scene = new Scene(root, 800, 600);
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
-        SpringPlanningModel model = new SpringPlanningModel();
-        new SpringPlanningController(this, model);
+        SprintPlanningModel model = new SprintPlanningModel();
+        new SprintPlanningController(this, model);
 
         primaryStage.setScene(scene);
         primaryStage.setTitle("Sprint Planning");

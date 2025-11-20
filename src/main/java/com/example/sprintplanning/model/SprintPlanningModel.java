@@ -7,7 +7,7 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-public class SpringPlanningModel {
+public class SprintPlanningModel {
 
     private final Unmarshaller unmarshaller;
     private final Marshaller marshaller;
@@ -15,7 +15,7 @@ public class SpringPlanningModel {
     private File currentFile;
     private Tasks tasks;
 
-    public SpringPlanningModel() throws JAXBException {
+    public SprintPlanningModel() throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(Tasks.class);
         unmarshaller = context.createUnmarshaller();
         marshaller = context.createMarshaller();
@@ -34,7 +34,7 @@ public class SpringPlanningModel {
     }
 
     public static void main(String[] args) throws JAXBException {
-        SpringPlanningModel model = new SpringPlanningModel();
+        SprintPlanningModel model = new SprintPlanningModel();
         model.loadWeekPlan("planning/2025-07-21.xml");
 
         for (Task task : model.tasks.getTasks()) {
